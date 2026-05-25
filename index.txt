@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NexaApps — NexaSallers</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Inter, Arial, Helvetica, sans-serif;
+    }
+
+    :root {
+      --bg: #030303;
+      --bg-2: #090909;
+      --card: rgba(255, 255, 255, 0.055);
+      --card-2: rgba(255, 255, 255, 0.09);
+      --border: rgba(255, 255, 255, 0.13);
+      --text: #ffffff;
+      --muted: rgba(255, 255, 255, 0.67);
+      --soft: rgba(255, 255, 255, 0.42);
+      --white: #ffffff;
+      --black: #050505;
+      --silver: #d7d7d7;
+      --shadow: 0 32px 90px rgba(0, 0, 0, 0.55);
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(circle at 76% 7%, rgba(255,255,255,0.12), transparent 24%),
+        radial-gradient(circle at 8% 28%, rgba(255,255,255,0.08), transparent 26%),
+        linear-gradient(135deg, #000 0%, #090909 42%, #050505 100%);
+      z-index: -3;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 54px 54px;
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent 76%);
+      z-index: -2;
+      pointer-events: none;
+    }
+
+    .noise {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -1;
+      opacity: 0.18;
+      background: radial-gradient(circle, rgba(255,255,255,0.08) 1px, transparent 1px);
+      background-size: 5px 5px;
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,0.6), transparent);
+    }
+
+    .container {
+      width: min(1180px, 92%);
+      margin: 0 auto;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(0, 0, 0, 0.68);
+      backdrop-filter: blur(22px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .navbar {
+      height: 82px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 22px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      color: #fff;
+      text-decoration: none;
+      letter-spacing: 8px;
+      font-size: 0.95rem;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .brand img {
+      width: 48px;
+      height: 48px;
+      object-fit: contain;
+      filter: drop-shadow(0 0 16px rgba(255,255,255,0.22));
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+    }
+
+    nav a {
+      color: rgba(255,255,255,0.74);
+      text-decoration: none;
+      font-size: 0.94rem;
+      transition: 0.25s ease;
+    }
+
+    nav a:hover {
+      color: #fff;
+      text-shadow: 0 0 18px rgba(255,255,255,0.5);
+    }
+
+    .btn {
+      border: 1px solid rgba(255,255,255,0.18);
+      outline: none;
+      text-decoration: none;
+      color: #050505;
+      background: linear-gradient(180deg, #ffffff, #cfcfcf);
+      font-weight: 900;
+      padding: 14px 20px;
+      border-radius: 15px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 18px 46px rgba(255,255,255,0.12);
+      transition: 0.25s ease;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 22px 62px rgba(255,255,255,0.2);
+    }
+
+    .btn.secondary {
+      color: #fff;
+      background: rgba(255,255,255,0.055);
+      box-shadow: none;
+      border: 1px solid rgba(255,255,255,0.16);
+    }
+
+    .btn.secondary:hover {
+      background: rgba(255,255,255,0.11);
+    }
+
+    .hero {
+      padding: 92px 0 72px;
+      position: relative;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: auto 0 0 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent);
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      align-items: center;
+      gap: 42px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      color: #f3f3f3;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.14);
+      padding: 10px 14px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      margin-bottom: 24px;
+    }
+
+    h1 {
+      font-size: clamp(2.6rem, 6.4vw, 5.8rem);
+      line-height: 0.92;
+      letter-spacing: -4px;
+      margin-bottom: 24px;
+    }
+
+    .metal-text {
+      background: linear-gradient(180deg, #ffffff 0%, #bcbcbc 46%, #5b5b5b 100%);
+      -webkit-background-clip: text;
+      color: transparent;
+      filter: drop-shadow(0 0 20px rgba(255,255,255,0.12));
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 1.08rem;
+      line-height: 1.75;
+      max-width: 650px;
+      margin-bottom: 30px;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 38px;
+    }
+
+    .trust-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      max-width: 650px;
+    }
+
+    .trust {
+      padding: 16px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.045);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .trust strong {
+      display: block;
+      font-size: 0.96rem;
+      margin-bottom: 4px;
+    }
+
+    .trust span {
+      display: block;
+      color: var(--soft);
+      font-size: 0.83rem;
+      line-height: 1.35;
+    }
+
+    .hero-media {
+      position: relative;
+      min-height: 460px;
+      border-radius: 34px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: #111;
+      box-shadow: var(--shadow);
+    }
+
+    .hero-media img {
+      width: 100%;
+      height: 100%;
+      min-height: 460px;
+      object-fit: cover;
+      display: block;
+      filter: contrast(1.08) brightness(0.92);
+    }
+
+    .hero-media::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(0,0,0,0.18), transparent 42%, rgba(0,0,0,0.1));
+      pointer-events: none;
+    }
+
+    .floating-card {
+      position: absolute;
+      left: 22px;
+      bottom: 22px;
+      width: min(390px, calc(100% - 44px));
+      padding: 18px;
+      border-radius: 24px;
+      background: rgba(0,0,0,0.62);
+      border: 1px solid rgba(255,255,255,0.16);
+      backdrop-filter: blur(18px);
+    }
+
+    .floating-card h3 {
+      font-size: 1.06rem;
+      margin-bottom: 8px;
+    }
+
+    .floating-card p {
+      margin: 0;
+      font-size: 0.88rem;
+      line-height: 1.5;
+      color: rgba(255,255,255,0.62);
+    }
+
+    section {
+      padding: 78px 0;
+    }
+
+    .section-title {
+      text-align: center;
+      max-width: 740px;
+      margin: 0 auto 42px;
+    }
+
+    .eyebrow {
+      color: rgba(255,255,255,0.38);
+      font-size: 0.75rem;
+      font-weight: 900;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .section-title h2 {
+      font-size: clamp(2rem, 4.5vw, 3.25rem);
+      letter-spacing: -2px;
+      margin-bottom: 14px;
+    }
+
+    .section-title p {
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .card, .plan {
+      background: linear-gradient(180deg, rgba(255,255,255,0.075), rgba(255,255,255,0.035));
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      box-shadow: 0 22px 80px rgba(0,0,0,0.25);
+      transition: 0.25s ease;
+    }
+
+    .card:hover, .plan:hover {
+      transform: translateY(-8px);
+      border-color: rgba(255,255,255,0.26);
+      background: linear-gradient(180deg, rgba(255,255,255,0.105), rgba(255,255,255,0.045));
+    }
+
+    .card {
+      padding: 28px;
+    }
+
+    .icon {
+      width: 58px;
+      height: 58px;
+      display: grid;
+      place-items: center;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      font-size: 1.65rem;
+      margin-bottom: 20px;
+      box-shadow: inset 0 0 22px rgba(255,255,255,0.055);
+    }
+
+    .card h3 {
+      font-size: 1.25rem;
+      margin-bottom: 10px;
+    }
+
+    .card p, .plan li {
+      color: rgba(255,255,255,0.63);
+      line-height: 1.68;
+      font-size: 0.96rem;
+    }
+
+    .banner-section {
+      padding-top: 36px;
+    }
+
+    .banner-showcase {
+      position: relative;
+      overflow: hidden;
+      border-radius: 34px;
+      border: 1px solid rgba(255,255,255,0.13);
+      background: rgba(255,255,255,0.04);
+      box-shadow: var(--shadow);
+    }
+
+    .banner-showcase img {
+      width: 100%;
+      display: block;
+      object-fit: cover;
+    }
+
+    .plans {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .plan {
+      position: relative;
+      padding: 30px;
+      min-height: 430px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .plan.featured {
+      transform: scale(1.035);
+      border-color: rgba(255,255,255,0.34);
+      box-shadow: 0 0 70px rgba(255,255,255,0.11);
+    }
+
+    .badge {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: #fff;
+      color: #050505;
+      font-size: 0.72rem;
+      letter-spacing: 1px;
+      font-weight: 1000;
+      text-transform: uppercase;
+    }
+
+    .plan h3 {
+      font-size: 1.45rem;
+      margin-bottom: 8px;
+    }
+
+    .plan .desc {
+      color: rgba(255,255,255,0.52);
+      margin-bottom: 22px;
+      font-size: 0.94rem;
+    }
+
+    .price {
+      font-size: 2.7rem;
+      font-weight: 1000;
+      letter-spacing: -2px;
+      margin-bottom: 20px;
+    }
+
+    .price small {
+      color: rgba(255,255,255,0.5);
+      font-size: 0.95rem;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    ul {
+      list-style: none;
+      display: grid;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+
+    li::before {
+      content: "✓";
+      color: #fff;
+      margin-right: 10px;
+      font-weight: 1000;
+    }
+
+    .plan .btn {
+      margin-top: auto;
+      width: 100%;
+    }
+
+    .cta {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 28px;
+      padding: 34px;
+      border-radius: 34px;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: linear-gradient(135deg, rgba(255,255,255,0.09), rgba(255,255,255,0.035));
+      box-shadow: var(--shadow);
+    }
+
+    .cta img {
+      width: 88px;
+      height: 88px;
+      object-fit: contain;
+      filter: drop-shadow(0 0 18px rgba(255,255,255,0.24));
+    }
+
+    .cta h2 {
+      font-size: clamp(1.8rem, 4vw, 2.9rem);
+      letter-spacing: -1.5px;
+      margin-bottom: 8px;
+    }
+
+    .cta p {
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    footer {
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding: 32px 0;
+      color: rgba(255,255,255,0.5);
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 22px;
+    }
+
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #fff;
+      font-weight: 900;
+      letter-spacing: 6px;
+      font-size: 0.82rem;
+    }
+
+    .footer-brand img {
+      width: 34px;
+      height: 34px;
+      object-fit: contain;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(18px);
+      animation: reveal 0.8s ease forwards;
+    }
+
+    .delay-1 { animation-delay: 0.12s; }
+    .delay-2 { animation-delay: 0.22s; }
+    .delay-3 { animation-delay: 0.32s; }
+
+    @keyframes reveal {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 960px) {
+      nav {
+        display: none;
+      }
+
+      .hero {
+        padding-top: 62px;
+      }
+
+      .hero-grid, .cards, .plans, .cta {
+        grid-template-columns: 1fr;
+      }
+
+      .trust-row {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-media, .hero-media img {
+        min-height: 320px;
+      }
+
+      .plan.featured {
+        transform: none;
+      }
+
+      h1 {
+        letter-spacing: -2px;
+      }
+
+      .footer-inner {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="noise"></div>
+
+  <header>
+    <div class="container navbar">
+      <a class="brand" href="#inicio">
+        <img src="assets/logo-nexa.png" alt="Logo NexaApps" />
+        <span>NexaApps</span>
+      </a>
+
+      <nav>
+        <a href="#inicio">Início</a>
+        <a href="#servicos">Serviços</a>
+        <a href="#planos">Planos</a>
+        <a href="#banner">Servidor</a>
+        <a href="#contato">Contato</a>
+      </nav>
+
+      <a class="btn" href="https://discord.gg/h4zJvUJQ" target="_blank" rel="noopener">Comprar no Discord →</a>
+    </div>
+  </header>
+
+  <main id="inicio">
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <div class="tag reveal">◉ nexaapps.com</div>
+          <h1 class="reveal delay-1">Automatize suas vendas com a <span class="metal-text">NexaApps</span></h1>
+          <p class="reveal delay-2">
+            O <b>NexaSallers</b> é o bot de vendas da NexaApps criado para lojas no Discord que querem carrinho, estoque, pagamentos, tickets, atendimento e painéis profissionais em um só lugar.
+          </p>
+
+          <div class="hero-actions reveal delay-3">
+            <a class="btn" href="https://discord.gg/h4zJvUJQ" target="_blank" rel="noopener">Adquirir NexaSallers →</a>
+            <a class="btn secondary" href="#planos">Ver planos ◇</a>
+          </div>
+
+          <div class="trust-row reveal delay-3">
+            <div class="trust">
+              <strong>🛡️ Seguro & confiável</strong>
+              <span>Fluxos organizados para vendas digitais.</span>
+            </div>
+            <div class="trust">
+              <strong>⚡ Alto desempenho</strong>
+              <span>Bot rápido, bonito e otimizado.</span>
+            </div>
+            <div class="trust">
+              <strong>🎧 Suporte premium</strong>
+              <span>Atendimento direto pelo Discord.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-media reveal delay-2">
+          <img src="assets/nexa-sallers-banner.png" alt="Banner NexaSallers" />
+          <div class="floating-card">
+            <h3>🤖 NexaSallers pronto para sua loja</h3>
+            <p>Venda planos, produtos e serviços com uma experiência moderna, premium e personalizada.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="servicos">
+      <div class="container">
+        <div class="section-title">
+          <div class="eyebrow">Serviços</div>
+          <h2>Soluções completas para o seu Discord</h2>
+          <p>Um sistema visualmente premium com automações para transformar seu servidor em uma loja profissional.</p>
+        </div>
+
+        <div class="cards">
+          <article class="card">
+            <div class="icon">🛒</div>
+            <h3>Bots de vendas</h3>
+            <p>Automatize compras, carrinhos, produtos, estoque, entrega e logs com uma estrutura feita para vender mais.</p>
+          </article>
+
+          <article class="card">
+            <div class="icon">🎫</div>
+            <h3>Atendimento & tickets</h3>
+            <p>Organize suporte, dúvidas, compras e atendimento com painéis bonitos e botões fáceis de usar.</p>
+          </article>
+
+          <article class="card">
+            <div class="icon">⚙️</div>
+            <h3>Painéis & automação</h3>
+            <p>Configure mensagens, canais, pagamentos, produtos e recursos pelo painel do seu próprio servidor.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="planos">
+      <div class="container">
+        <div class="section-title">
+          <div class="eyebrow">Planos NexaSallers</div>
+          <h2>Escolha o plano ideal para você</h2>
+          <p>Planos acessíveis para começar sua loja automatizada com o padrão visual da NexaApps.</p>
+        </div>
+
+        <div class="plans">
+          <article class="plan">
+            <h3>Plano Mensal</h3>
+            <p class="desc">Perfeito para testar e começar.</p>
+            <div class="price">R$3,99<small>/mês</small></div>
+            <ul>
+              <li>NexaSallers ativo por 30 dias</li>
+              <li>Painel de vendas personalizado</li>
+              <li>Carrinho e controle de estoque</li>
+              <li>Suporte pelo Discord</li>
+            </ul>
+            <a class="btn secondary" href="https://discord.gg/h4zJvUJQ" target="_blank" rel="noopener">Comprar mensal</a>
+          </article>
+
+          <article class="plan featured">
+            <span class="badge">Mais escolhido</span>
+            <h3>Plano Trimestral</h3>
+            <p class="desc">Mais tempo com melhor custo-benefício.</p>
+            <div class="price">R$9,99<small>/3 meses</small></div>
+            <ul>
+              <li>NexaSallers ativo por 90 dias</li>
+              <li>Todos os recursos do mensal</li>
+              <li>Economia em relação ao mensal</li>
+              <li>Atualizações e melhorias inclusas</li>
+              <li>Suporte prioritário</li>
+            </ul>
+            <a class="btn" href="https://discord.gg/h4zJvUJQ" target="_blank" rel="noopener">Comprar trimestral</a>
+          </article>
+
+          <article class="plan">
+            <h3>Plano Anual</h3>
+            <p class="desc">Para quem quer estabilidade o ano todo.</p>
+            <div class="price">R$35,99<small>/ano</small></div>
+            <ul>
+              <li>NexaSallers ativo por 12 meses</li>
+              <li>Todos os recursos disponíveis</li>
+              <li>Melhor economia anual</li>
+              <li>Suporte e atualizações</li>
+              <li>Ideal para lojas em crescimento</li>
+            </ul>
+            <a class="btn secondary" href="https://discord.gg/h4zJvUJQ" target="_blank" rel="noopener">Comprar anual</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="banner-section" id="banner">
+      <div class="container">
+        <div class="section-title">
+          <div class="eyebrow">Servidor</div>
+          <h2>Entre na comunidade Nexa Applications</h2>
+          <p>Conheça o servidor oficial, tire dúvidas, veja novidades e adquira seu plano NexaSallers.</p>
+        </div>
+        <div class="banner-showcase">
+          <img src="assets/nexa-sallers-banner.png" alt="Servidor Nexa Applications" />
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div class="cta">
+          <img src="assets/logo-nexa.png" alt="NexaApps" />
+          <div>
+            <h2>Pronto para transformar seu servidor?</h2>
+            <p>Adquira o NexaSallers e comece a automatizar suas vendas no Discord com um sistema bonito, profissional e acessível.</p>
+          </div>
+          <a class="btn" href="https://discord.gg/h4zJvUJQ" target="_blank" rel="noopener">Comprar agora →</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer id="contato">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <img src="assets/logo-nexa.png" alt="NexaApps" />
+        <span>NexaApps</span>
+      </div>
+      <p>© 2026 NexaApps. Todos os direitos reservados.</p>
+      <p>discord.gg/h4zJvUJQ</p>
+    </div>
+  </footer>
+
+  <script>
+    const interactiveCards = document.querySelectorAll('.card, .plan');
+
+    interactiveCards.forEach((card) => {
+      card.addEventListener('mousemove', (event) => {
+        const rect = card.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+        card.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(255,255,255,0.13), rgba(255,255,255,0.045) 42%)`;
+      });
+
+      card.addEventListener('mouseleave', () => {
+        card.style.background = 'linear-gradient(180deg, rgba(255,255,255,0.075), rgba(255,255,255,0.035))';
+      });
+    });
+  </script>
+</body>
+</html>
